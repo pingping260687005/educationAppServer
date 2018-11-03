@@ -1,22 +1,27 @@
+import { getAllStudent } from './app';
 import * as express from 'express';
 
 const app = express();
 
 // get
 app.get('/',(req,res)=>{
-
     res.send('hello express');
-
 });
 
-app.get('/api/products',(req,res)=>{
-
-   // res.send('查询商品请求');
-    res.send(products);
-
+app.get('/api/students',(req, res)=>{
+    getAllStudent().then((result)=>{
+        res.send(result);
+    });
 });
 
-app.get('/api/products/:id',(req,res)=>{
+// async function sss(){
+//     let allStudents = await getAllStudent();
+//     // it will be called after geting allstudent  
+//     console.log("allStudents   "+ allStudents);
+//     console.log(allStudents);
+// }
+
+app.get('/api/students/:id',(req,res)=>{
    let p = products.find(product=>product.id == req.params.id)
    console.log(p)
    res.send(p);

@@ -10,74 +10,69 @@ $sql.connect();                          //运用了这句才是真正连接
 
 //查询
 
-var select = "select * from mono";   //假设我们数据表叫mono  *代表查询全部内容  select查询
-
-$sql.query(select, function (err, res) {   //err提示错误信息  res是查询到的内容全在里面
-
-    if (err) {
-
-        console.log("错误", err);//我们打印出，错误信息  
-
-    } else {
-
-        console.log(res);      //打印出我们查询的内容
-
-    }
-
-
-
-})
-
+export function getAllStudent () {
+    var select = "select * from student";   //假设我们数据表叫mono  *代表查询全部内容  select查询
+    return new Promise((resolve,reject)=>{
+         $sql.query(select, function (err, res) {   //err提示错误信息  res是查询到的内容全在里面
+            if (err) {
+                reject(err); //console.log("错误", err);//我们打印出，错误信息  
+            } else {
+                resolve(res);
+            }
+        });
+    })
+}
+ 
 //增加
 
-var insert = "insert into mono (id,name,age) value (3,'中国',5000)";  //我们往数据表mono里面添加了一条数据；   id=3;name=中国;age=5000这是新的一条数据
+// var insert = "insert into mono (id,name,age) value (3,'中国',5000)";  //我们往数据表mono里面添加了一条数据；   id=3;name=中国;age=5000这是新的一条数据
 
-$sql.query(insert, function (err, res) {
+// $sql.query(insert, function (err, res) {
 
-    if (err) {
+//     if (err) {
 
-        console.log("错误", err);
+//         console.log("错误", err);
 
-    } else {
+//     } else {
 
-        console.log("添加成功", res);  //我们打印出添加成功的信息
+//         console.log("添加成功", res);  //我们打印出添加成功的信息
 
-    }
+//     }
 
-})
+// })
 
-//修改
+// //修改
 
-var updata = "update mono set name='中国' where name='北京' ";  //我们把mono表里面name数据等于中国，改为了北京
+// var updata = "update mono set name='中国' where name='北京' ";  //我们把mono表里面name数据等于中国，改为了北京
 
-$sql.query(updata, function (err, res) {
+// $sql.query(updata, function (err, res) {
 
-    if (err) {
+//     if (err) {
 
-        console.log("错误", err);
+//         console.log("错误", err);
 
-    } else {
+//     } else {
 
-        console.log("修改成功", res);
+//         console.log("修改成功", res);
 
-    }
+//     }
 
-})
-
-
-
-//删除
-
-var del = "delete from mono id=3" //我们删除mono表里面id=3的数据  delete删除
-
-$sql.query(del, function (err,res) {
+// })
 
 
 
-    if (err) {
-        console.log(err);
-    } else {
-        console.log("成功删除", res);
-    }
+// //删除
 
-})
+// var del = "delete from mono id=3" //我们删除mono表里面id=3的数据  delete删除
+
+// $sql.query(del, function (err,res) {
+
+
+
+//     if (err) {
+//         console.log(err);
+//     } else {
+//         console.log("成功删除", res);
+//     }
+
+// })
