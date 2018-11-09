@@ -58,3 +58,21 @@ vsCode中按快捷键“ctrl+shift+B”顶部选择 任务=》运行生产任务
 nodemon node build/auction.server.js// 启动express, 请用nodemon 来检测变化, 启动项目
 
 可以编译ts文件 一旦运行之后只要改变文件都会自动编译。
+
+debug: launch.js
+
+{
+    // 使用 IntelliSense 了解相关属性。 
+    // 悬停以查看现有属性的描述。
+    // 欲了解更多信息，请访问: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Launch Program",
+            "program": "${workspaceFolder}/build/auction.server.js"
+        }
+    ]
+}
+

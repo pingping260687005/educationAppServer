@@ -3,11 +3,17 @@ import * as express from 'express';
 
 const app = express();
 
-// get
-app.get('/',(req,res)=>{
-    res.send('hello express');
-});
+// 进入页面
+app.get('/', function(req, res, next){
+    var sess = req.session;
+    var loginUser = sess.loginUser;
+    var isLogined = !!loginUser;
 
+    res.render('index', {
+        isLogined: isLogined,
+        name: loginUser || ''
+    });
+});
 app.get('/api/students',(req, res)=>{
     getAllStudent().then((result)=>{
         res.send(result);
@@ -31,6 +37,54 @@ const server = app.listen(8000, "localhost",()=>{
  
         console.log("服务器已经启动， 地址是localhost: 8000")
 });
+
+
+// var users = require('./user').items;
+
+// var findUser = function(name, password){
+//     return users.find(function(item){
+//         return item.name === name && item.password === password;
+//     });
+// };
+
+// // 登录接口 v
+// app.post('/login', function(req, res, next){
+    
+//     var sess = req.session;
+//     var user = findUser(req.body.name, req.body.password);
+
+//     if(user){
+//         req.session.regenerate(function(err) {
+//             if(err){
+//                 return res.json({ret_code: 2, ret_msg: '登录失败'});                
+//             }
+            
+//             req.session.loginUser = user.name;
+//             res.json({ret_code: 0, ret_msg: '登录成功'});                           
+//         });
+//     }else{
+//         res.json({ret_code: 1, ret_msg: '账号或密码错误'});
+//     }   
+// });
+
+// // 退出登录
+// app.get('/logout', function(req, res, next){
+//     // 备注：这里用的 session-file-store 在destroy 方法里，并没有销毁cookie
+//     // 所以客户端的 cookie 还是存在，导致的问题 --> 退出登陆后，服务端检测到cookie
+//     // 然后去查找对应的 session 文件，报错
+//     // session-file-store 本身的bug    
+
+//     req.session.destroy(function(err) {
+//         if(err){
+//             res.json({ret_code: 2, ret_msg: '退出登录失败'});
+//             return;
+//         }
+        
+//         // req.session.loginUser = null;
+//         res.clearCookie(identityKey);
+//         res.redirect('/');
+//     });
+// });
 
 
 export class Product{
