@@ -1,6 +1,6 @@
 class User {
     public items = [
-        {name: 'chyingp', password: '123456'}
+        {name: 'chyingp', password: '123456'},
     ];
 
 }

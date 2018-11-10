@@ -1,10 +1,13 @@
-var express = require('express');
-var app = express();
-var session = require('express-session');
-var FileStore = require('session-file-store')(session);
-var User = require('user');
+import * as express from 'express';
+// tslint:disable-next-line:no-var-requires
+const session = require('express-session');
+// tslint:disable-next-line:no-var-requires
+const FileStore = require('session-file-store')(session);
+// tslint:disable-next-line:no-var-requires
+const User = require('user');
 
-var identityKey = 'skey';
+const app = express();
+const identityKey = 'skey';
 
 app.use(session({
     name: identityKey,
@@ -13,6 +16,6 @@ app.use(session({
     saveUninitialized: false,  // 是否自动保存未初始化的会话，建议false
     resave: false,  // 是否每次都重新保存会话，建议false
     cookie: {
-        maxAge: 10 * 1000  // 有效期，单位是毫秒
-    }
+        maxAge: 10 * 1000,  // 有效期，单位是毫秒
+    },
 }));
