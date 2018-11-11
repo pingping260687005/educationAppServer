@@ -75,7 +75,7 @@ export class EducationService {
       if (i === 0) {
         idsql += `id=${id}`;
       } else {
-        idsql += `and id=${id}`;
+        idsql += ` and id=${id}`;
       }
     });
     const sql = `DELETE FROM student WHERE ${idsql}`;

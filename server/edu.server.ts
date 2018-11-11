@@ -41,9 +41,11 @@ app.get('/api/students/:id', (req, res) => {
 app.post('/api/students', (req, res) => {
   educationService.addStudent(req.body)
   .then((result) => {
-    res.send('succeed');
+    req.body.id = result['insertId'];
+    res.send({...req.body, message: 'succeed'});
   }).catch( (reason) => {
-    res.send('failed');
+    // TODO
+    res.send({message: 'failed', reason: ''});
   });
 });
 
@@ -51,9 +53,9 @@ app.post('/api/students', (req, res) => {
 app.put('/api/students', (req, res) => {
   educationService.updateStudent(req.body)
   .then((result) => {
-    res.send('succeed');
+    res.send({...req.body, message: 'succeed'});
   }).catch( (reason) => {
-    res.send('failed');
+    res.send({message: 'failed', reason: ''});
   });
 });
 
@@ -65,11 +67,12 @@ app.post('/api/students/deleteStudents', (req, res) => {
   console.log(req.body);
   educationService.deleteStudents(req.body)
   .then((result) => {
-    res.send('succeed');
+    res.send({message: 'succeed'});
   }).catch( (reason) => {
-    res.send('failed');
+    res.send({message: 'failed'});
   });
 });
+// json 和 class 之间的转换
 
 /*var users = require('./user').items;
 
