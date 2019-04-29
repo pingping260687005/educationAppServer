@@ -4,7 +4,11 @@ educationApp Server
 
 npm 命令 npm init -y 会生成一个package.json tsconfig.json 是ts的配置
 
-@types/node // 配置一个express server npm init -y tsconfig.json npm i @types/node -S npm install -g typescript npm install -g typings npm i 
+@types/node // 配置一个express server 
+npm init -y tsconfig.json 
+npm i @types/node -S 
+npm install -g typescript 
+npm install -g typings npm i 
 
 express -S// 装express node build/acution_server.js // 启动express
 
