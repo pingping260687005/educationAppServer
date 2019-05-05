@@ -132,82 +132,78 @@ products.push(new Product(3, '第三件商品', 7.66, 4.5, '第三件商品第�
 products.push(new Product(4, '第四件商品', 5.5, 3.5, '第四件商品第四件商品第四件商品第四件商品第四件商品第四件商品'));
 products.push(new Product(5, '第五件商品', 8.7, 5, '第五件商品第五件商品第五件商品第五件商品第五件商品第五件商品'));
 
-
-
-
 export function login(req, res, next) {
-  var sess = req.session;
-  var user = educationService.checkUser(req.body.name, req.body.password);
-  if(user){
-    req.session.regenerate(function(err) {
-        if(err){
-            return res.json({ret_code: 2, ret_msg: '登录失败'});                
+  const sess = req.session;
+  const user: any = educationService.checkUser(req.body.name, req.body.password);
+  if (user) {
+    req.session.regenerate((err) => {
+        if (err) {
+            return res.json({ret_code: 2, ret_msg: '登录失败'});
         }
-        
+
         req.session.loginUser = user.name;
-        res.json({ret_code: 0, ret_msg: '登录成功'});                           
+        res.json({ret_code: 0, ret_msg: '登录成功'});
     });
-}else{
+} else {
     res.json({ret_code: 1, ret_msg: '账号或密码错误'});
-}   
+}
 }
 
-export function logout(req, res, next){
+export function logout(req, res, next) {
  // 备注：这里用的 session-file-store 在destroy 方法里，并没有销毁cookie
     // 所以客户端的 cookie 还是存在，导致的问题 --> 退出登陆后，服务端检测到cookie
     // 然后去查找对应的 session 文件，报错
-    // session-file-store 本身的bug    
+    // session-file-store 本身的bug
 
-    req.session.destroy(function(err) {
-      if(err){
+    req.session.destroy((err) => {
+      if (err) {
           res.json({ret_code: 2, ret_msg: '退出登录失败'});
           return;
       }
-      
+
       // req.session.loginUser = null;
       res.clearCookie('skey');
       res.redirect('/');
   });
 }
 
-
-export function renderIndex (req, res, next){
-  var sess = req.session;
-    var loginUser = sess.loginUser;
-    var isLogined = !!loginUser;
+export function renderIndex(req, res, next) {
+  const sess = req.session;
+  const loginUser = sess.loginUser;
+  const isLogined = !!loginUser;
   res.render('index', {
-    isLogined: isLogined,
-    name: loginUser || ''
+    isLogined,
+    name: loginUser || '',
 });
 }
 
 /**
  * Render the server error page
  */
-export function renderServerError (req, res) {
+export function renderServerError(req, res) {
   res.status(500).render('.tmp/serve/500.html', {
-    error: 'Oops! Something went wrong...'
+    error: 'Oops! Something went wrong...',
   });
-};
+}
 
 /**
  * Render the server not found responses
  * Performs content-negotiation on the Accept HTTP header
  */
-export function renderNotFound (req, res) {
+export function renderNotFound(req, res) {
   res.status(404).format({
-    'text/html': function () {
+    'text/html'() {
       res.render('.tmp/serve/404.html', {
-        url: req.originalUrl
+        url: req.originalUrl,
       });
     },
-    'application/json': function () {
+    'application/json'() {
       res.json({
-        error: 'Path not found'
+        error: 'Path not found',
       });
     },
-    'default': function () {
+    'default'() {
       res.send('Path not found');
-    }
+    },
   });
-};
+}

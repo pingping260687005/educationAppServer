@@ -6,17 +6,17 @@ const FileStore = require('session-file-store')(session);
 const User = require('user');
 import * as bodyParser from 'body-parser';
 import * as express from 'express';
+import * as http from 'http';
 import { EducationService } from './services/educationService';
-//http = require('http'),
 
 export class MyExpress {
   private educationService: EducationService;
   public initExpress() {
     // Initialize express app
     const app = express();
-    
+
     this.educationService = new EducationService();
-    
+
     // Initialize Express middleware
     this.initMiddleware(app);
 
@@ -37,18 +37,14 @@ export class MyExpress {
 
     // Initialize error routes
     this.initErrorRoutes(app);
-    
-    this.configureSSL(app);
-  
-    return app;
-  };
+
+    return this.configureSSL(app);
+
+  }
 
   private initMiddleware(app) {
     app.use(bodyParser.urlencoded({ extended: false }));
     app.use(bodyParser.json());
-    app.use(methodOverride());
-    app.use(cookieParser());
-    app.use(flash());
   }
 
   private initSession(app) {
@@ -63,22 +59,19 @@ export class MyExpress {
       },
     }));
   }
-  
-  
 /**
  * Configure view engine
  */
-private initViewEngine = function (app) {
-  app.engine('html', hbs.express4({
-    extname: '.html'
-  }));
-  app.set('view engine', 'html');
-  app.set('views', path.resolve('./'));
-};
+// private initViewEngine = function (app) {
+//   app.engine('html', hbs.express4({
+//     extname: '.html'
+//   }));
+//   app.set('view engine', 'html');
+//   app.set('views', path.resolve('./'));
+// };
 
-  private userAuthentication(app) {
-     
-  }
+  private userAuthentication(app) { }
+
   private initModulesClientRoutes(app) {
     // app.use(express.static(path.resolve('./src')));
     // app.use('/dist', express.static(path.resolve('./dist'), { maxAge: 86400000, index: false }));
@@ -91,7 +84,7 @@ private initViewEngine = function (app) {
     // });
   }
   private initErrorRoutes(app) {
-    app.use(function (err, req, res, next) {
+    app.use( (err, req, res, next) => {
       // If the error object doesn't exists
       if (!err) {
         return next();
@@ -100,11 +93,8 @@ private initViewEngine = function (app) {
       res.redirect('/server-error');
     });
   }
-  private configureSSL (app) {
-    var server = http.createServer(app);
+  private configureSSL(app) {
+    const server = http.createServer(app);
     return server;
-  };
-};
-
-const exp = new MyExpress();
-exp.initExpress();
+  }
+}
