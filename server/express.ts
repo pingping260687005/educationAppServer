@@ -2,20 +2,20 @@
 const session = require('express-session');
 // tslint:disable-next-line:no-var-requires
 const FileStore = require('session-file-store')(session);
+const path = require('path');
 // tslint:disable-next-line:no-var-requires
-const User = require('user');
 import * as bodyParser from 'body-parser';
 import * as express from 'express';
 import * as http from 'http';
 import { EducationService } from './services/educationService';
+import {config} from './config'
 
 export class MyExpress {
-  private educationService: EducationService;
-  public initExpress() {
+  public initExpress($sql) {
     // Initialize express app
     const app = express();
 
-    this.educationService = new EducationService();
+    const edu = new EducationService($sql);
 
     // Initialize Express middleware
     this.initMiddleware(app);
@@ -33,7 +33,7 @@ export class MyExpress {
     this.initModulesClientRoutes(app);
 
     // Initialize modules server routes
-    this.initModulesServerRoutes(app);
+    this.initModulesServerRoutes(app, edu);
 
     // Initialize error routes
     this.initErrorRoutes(app);
@@ -70,21 +70,21 @@ export class MyExpress {
 //   app.set('views', path.resolve('./'));
 // };
 
-  private userAuthentication(app) { }
+  // private userAuthentication(app) { }
 
   private initModulesClientRoutes(app) {
     // app.use(express.static(path.resolve('./src')));
-    // app.use('/dist', express.static(path.resolve('./dist'), { maxAge: 86400000, index: false }));
+    app.use('/dist', express.static(path.resolve('./dist'), { maxAge: 86400000, index: false }));
     // app.use('/node_modules', express.static(path.resolve('./node_modules'), { maxAge: 86400000, index: false }));
     // app.use('/', express.static(path.resolve('./.tmp')));
   }
-  private initModulesServerRoutes(app) {
-    // config.server.routes.forEach(function (routePath) {
-    //   require(path.resolve(routePath))(app);
-    // });
+  private initModulesServerRoutes(app, edu) {
+    config.server.routes.forEach(function (routePath) {
+      require(path.resolve(routePath))(app, edu);
+    });
   }
   private initErrorRoutes(app) {
-    app.use( (err, req, res, next) => {
+    app.use( (err, _, res, next) => {
       // If the error object doesn't exists
       if (!err) {
         return next();
