@@ -3,6 +3,7 @@ const session = require('express-session');
 // tslint:disable-next-line:no-var-requires
 const FileStore = require('session-file-store')(session);
 const path = require('path');
+const hbs = require('express-hbs');
 // tslint:disable-next-line:no-var-requires
 import * as bodyParser from 'body-parser';
 import * as express from 'express';
@@ -21,7 +22,7 @@ export class MyExpress {
     this.initMiddleware(app);
 
      // Initialize Express view engine
-     // this.initViewEngine(app);
+     this.initViewEngine(app);
 
     // Initialize Express session
     this.initSession(app);
@@ -62,13 +63,13 @@ export class MyExpress {
 /**
  * Configure view engine
  */
-// private initViewEngine = function (app) {
-//   app.engine('html', hbs.express4({
-//     extname: '.html'
-//   }));
-//   app.set('view engine', 'html');
-//   app.set('views', path.resolve('./'));
-// };
+private initViewEngine = function (app) {
+  app.engine('html', hbs.express4({
+    extname: '.html'
+  }));
+  app.set('view engine', 'html');
+  app.set('views', path.resolve('./'));
+};
 
   // private userAuthentication(app) { }
 
