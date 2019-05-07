@@ -7,10 +7,10 @@ export let config = {
       style: ['src/**/*.scss']
     },
     server: {
-      allJS: ['server.js', 'config/**/*.js', 'server/*.js'],
+      allJS: ['server.js', 'config/**/*.js', 'build/**/*.js'],
       models: ['server/models/users.model.js'],
       views: ['src/*.html'],
       config: [],
-      routes: ['server/routes/proxy.routes.js'],
+      routes: ['build/server/routes/core.route.js'],
     },
 };
