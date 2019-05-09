@@ -74,8 +74,8 @@ private initViewEngine = (app) => {
   // private userAuthentication(app) { }
 
   private initModulesClientRoutes(app) {
-    // app.use(express.static(path.resolve('./src')));
-    app.use('/dist', express.static(path.resolve('./dist'), { maxAge: 86400000, index: false }));
+    app.use(express.static(path.resolve('./dist')));
+    // app.use('/dist', express.static(path.resolve('./dist'), { maxAge: 86400000, index: false }));
     // app.use('/node_modules', express.static(path.resolve('./node_modules'), { maxAge: 86400000, index: false }));
     // app.use('/', express.static(path.resolve('./.tmp')));
   }

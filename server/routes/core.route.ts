@@ -113,10 +113,9 @@ module.exports = (app, educationService) => {
     const sess = req.session;
     const loginUser = sess.loginUser;
     const isLogined = !!loginUser;
-    res.render('index', {
-      isLogined,
-      name: loginUser || '',
-    });
+    app.locals.loginUser = loginUser;
+    app.locals.isLogined = isLogined;
+    res.render('dist/index');
   });
 
 };
