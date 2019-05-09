@@ -127,7 +127,8 @@
         "use-life-cycle-interface": false,
         "use-pipe-transform-interface": true,
         "component-class-suffix": true,
-        "directive-class-suffix": true
+        "directive-class-suffix": true,
+        "no-var-requires": false
       },
     "rulesDirectory": []
 }

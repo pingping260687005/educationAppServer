@@ -8,7 +8,7 @@ export function start() {
   this.$sql.connect();       // 运用了这句才是真正连接
 
   const app = new MyExpress();
-  const sev = app.initExpress();
+  const sev = app.initExpress(this.$sql);
   // Start the app by listening on <port> at <host>
   sev.listen(8080, '127.0.0.1', () => {
     // Create server URL

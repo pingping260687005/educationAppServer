@@ -8,8 +8,8 @@ const hbs = require('express-hbs');
 import * as bodyParser from 'body-parser';
 import * as express from 'express';
 import * as http from 'http';
+import {config} from './config';
 import { EducationService } from './services/educationService';
-import {config} from './config'
 
 export class MyExpress {
   public initExpress($sql) {
@@ -22,7 +22,7 @@ export class MyExpress {
     this.initMiddleware(app);
 
      // Initialize Express view engine
-     this.initViewEngine(app);
+    this.initViewEngine(app);
 
     // Initialize Express session
     this.initSession(app);
@@ -56,20 +56,20 @@ export class MyExpress {
       saveUninitialized: false,  // 是否自动保存未初始化的会话，建议false
       resave: false,  // 是否每次都重新保存会话，建议false
       cookie: {
-        maxAge: 10 * 1000,  // 有效期，单位是毫秒
+        maxAge: 30 * 60 * 1000,  // 有效期，单位是毫秒
       },
     }));
   }
 /**
  * Configure view engine
  */
-private initViewEngine = function (app) {
+private initViewEngine = (app) => {
   app.engine('html', hbs.express4({
-    extname: '.html'
+    extname: '.html',
   }));
   app.set('view engine', 'html');
   app.set('views', path.resolve('./'));
-};
+}
 
   // private userAuthentication(app) { }
 
@@ -80,7 +80,7 @@ private initViewEngine = function (app) {
     // app.use('/', express.static(path.resolve('./.tmp')));
   }
   private initModulesServerRoutes(app, edu) {
-    config.server.routes.forEach(function (routePath) {
+    config.server.routes.forEach((routePath) => {
       require(path.resolve(routePath))(app, edu);
     });
   }
