@@ -1,97 +1,105 @@
-export class EducationService {
-  constructor(private $sql: any) {
-    // open connection
-    // this.$sql = $mysql.createConnection(connction.mysql);       // 创建一个连接        mysql是我们上面文件暴露出来的模板的方法
-    // this.$sql.connect();       // 运用了这句才是真正连接
-  }
+const dbService = require('./db.service');
 
-  checkUser(userName: string, pwd: string) {
-    const select = 'select * from user_education where username=' + userName + ' and password=' + pwd;
-    return new Promise((resolve, reject) => {
-      this.$sql.query(select, (err, res) => {   // err提示错误信息  res是查询到的内容全在里面
-        if (err) {
-          reject(err); // console.log("错误", err);//我们打印出，错误信息
-        } else {
-          // resolve(res);
-          if (res.length > 0) {
-            console.log(res);
-            resolve(true);
-          } else {
-            // no data
-            resolve(false);
-          }
-        }
-      });
-    });
-  }
+exports.checkUser = async (userName: string, pwd: string) {
+    try {
+      const select = 'select * from user_education where username=? and password=?';
+      const conn = await dbService.query(select, [userName, pwd]);
+      const res = await conn.query(select, [userName, pwd]);
+      if (res.length > 0) {
+        const user  = {
+          // tslint:disable-next-line:trailing-comma
+          name: userName
+        };
+        return user;
+      } else {
+        return null;
+      }
+    } catch (error) {
+      return null;
+    }
+  };
 
   // 查询
-  getAllStudent() {
+exports.getAllStudent = async (_, res) => {
+  try {
     const select = 'select * from student';
-    return new Promise((resolve, reject) => {
-      this.$sql.query(select, (err, res) =>  {   // err提示错误信息  res是查询到的内容全在里面
-        if (err) {
-          reject(err); // console.log("错误", err);//我们打印出，错误信息
-        } else {
-          resolve(res);
-        }
-      });
-    });
+    const data = await dbService.query(select, []);
+    return res.json({data, success: true});
+  } catch (error) {
+    return res.json({error, success: false});
   }
+};
 
-  getStudentById(id: number) {
-    const selectSql = `select * from student where id=${id}`;
-    return new Promise((resolve, reject) => {
-      this.$sql.query(selectSql, (err, res) =>  {   // err提示错误信息  res是查询到的内容全在里面
-        if (err) {
-          reject(err); // console.log("错误", err);//我们打印出，错误信息
-        } else {
-          resolve(res);
-        }
-      });
-    });
+exports.getStudentById = async (req, res) => {
+  const id = Number(req.params.id);
+  try {
+    const select = 'select * from student where id=?';
+    const data = await dbService.query(select, [id]);
+    return res.json({data, success: true});
+  } catch (error) {
+    return res.json({error, success: false});
   }
+};
 
-  addStudent(student: IStudent) {
-    const sql = `INSERT INTO student (studentNum, name, sex, age, phone, parentPhone, address) VALUES ('${student.studentNum}', '${student.name}', '${student.sex}', ${student.age}, ${student.phone}, ${student.parentPhone}, '${student.address}')`;
-    return this.getPromise(sql);
+exports.addStudent = async (req, res) => {
+  const student: IStudent = req.body;
+  try {
+    const select = 'INSERT INTO student (studentNum, name, sex, age, phone, parentPhone, address) VALUES (?,?,?,?,?,?,?)';
+    const data = await dbService.beginTransaction(select, [student.studentNum, student.name, student.sex, student.age, student.phone, student.parentPhone, student.address]);
+    req.body.id = data['insertId'];
+    return res.json({...req.body, message: 'succeed'});
+  } catch (error) {
+    return res.json({message: 'failed', reason: error});
+   }
+};
+
+// addStudent(student: IStudent); {
+//     const sql = `INSERT INTO student (studentNum, name, sex, age, phone, parentPhone, address) VALUES ('${student.studentNum}', '${student.name}', '${student.sex}', ${student.age}, ${student.phone}, ${student.parentPhone}, '${student.address}')`;
+//     return this.getPromise(sql);
+//   }
+
+exports.updateStudent = async (req, res) => {
+  const student: IStudent = req.body;
+  try {
+    const select = 'UPDATE student SET studentNum = ?, name = ?, sex = ?, age =?, phone =?, parentPhone =?, address =? where id = ?;';
+    await dbService.beginTransaction(select, [student.studentNum, student.name, student.sex, student.age, student.phone, student.parentPhone, student.address, student.id]);
+    return res.json({...req.body, message: 'succeed'});
+  } catch (error) {
+    return res.json({message: 'failed', reason: error});
   }
+};
+// updateStudent(student: IStudent); {
+//     const sql = `UPDATE student SET studentNum = '${student.studentNum}', name = '${student.studentNum}'
+//     , sex = '${student.sex}', age = ${student.age}, phone = ${student.phone}
+//     , parentPhone = ${student.parentPhone}, address = '${student.address}'
+//     WHERE id = ${student.id}`;
+//     return this.getPromise(sql);
+//   }
 
-  updateStudent(student: IStudent) {
-    const sql = `UPDATE student SET studentNum = '${student.studentNum}', name = '${student.studentNum}'
-    , sex = '${student.sex}', age = ${student.age}, phone = ${student.phone}
-    , parentPhone = ${student.parentPhone}, address = '${student.address}'
-    WHERE id = ${student.id}`;
-    return this.getPromise(sql);
+exports.deleteStudents = async (req, res) => {
+  const ids: number[] = req.body;
+  try {
+    const select = 'DELETE FROM student WHERE id=?;';
+    const data = await dbService.beginTransaction(select, ids);
+    return res.json({message: 'succeed'});
+  } catch (error) {
+    return res.send({message: 'failed', reason: error});
   }
+};
+// deleteStudents(ids: number[]); {
+//     let idsql = '';
+//     ids.forEach((id, i) => {
+//       if (i === 0) {
+//         idsql += `id=${id}`;
+//       } else {
+//         idsql += ` and id=${id}`;
+//       }
+//     });
+//     const sql = `DELETE FROM student WHERE ${idsql}`;
+//     return this.getPromise(sql);
+//   }
 
-  deleteStudents(ids: number[]) {
-    let idsql = '';
-    ids.forEach((id, i) => {
-      if (i === 0) {
-        idsql += `id=${id}`;
-      } else {
-        idsql += ` and id=${id}`;
-      }
-    });
-    const sql = `DELETE FROM student WHERE ${idsql}`;
-    return this.getPromise(sql);
-  }
-
-  getPromise(sql: string) {
-    return new Promise((resolve, reject) => {
-      this.$sql.query(sql, (err, res) =>  {   // err提示错误信息  res是查询到的内容全在里面
-        if (err) {
-          reject(err); // console.log("错误", err);//我们打印出，错误信息
-        } else {
-          resolve(res);
-        }
-      });
-    });
-  }
-}
-
-// 增加
+  // 增加
 
 // var insert = "insert into mono (id,name,age) value (3,'中国',5000)";  //我们往数据表mono里面添加了一条数据；   id=3;name=中国;age=5000这是新的一条数据
 

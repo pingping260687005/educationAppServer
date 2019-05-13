@@ -1,1 +1,20 @@
 welcome first index page
+<script>
+var ws = new WebSocket('ws://localhost:8080/socketTest');
+ws.addEventListener('open', function (event) {
+    console.log('socket is open');
+    ws.send("Hello WebSockets!");
+});
+ws.addEventListener('message', function (event) {
+    console.log('Message from server', event.data);
+});
+ws.onmessage=function(e){
+    console.log('_message');
+    console.log(e.data);
+};
+ws.onclose = function (e) {
+    console.log("Disconnected",e);
+} ;
+
+
+</script>
