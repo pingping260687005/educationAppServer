@@ -4,6 +4,11 @@ const session = require('express-session');
 const FileStore = require('session-file-store')(session);
 const path = require('path');
 const hbs = require('express-hbs');
+const favicon = require('serve-favicon'),
+    methodOverride = require('method-override'),
+      cookieParser = require('cookie-parser'),
+      flash = require('connect-flash');
+
 // tslint:disable-next-line:no-var-requires
 import * as bodyParser from 'body-parser';
 import * as express from 'express';
@@ -44,8 +49,12 @@ export class MyExpress {
   }
 
   private initMiddleware(app) {
+    app.use(favicon('modules/core/client/img/brand/favicon.ico'));// address need to be changed
     app.use(bodyParser.urlencoded({ extended: false }));
     app.use(bodyParser.json());
+    app.use(methodOverride());
+    app.use(cookieParser());
+    app.use(flash());
   }
 
   private initSession(app) {
@@ -59,6 +68,12 @@ export class MyExpress {
         maxAge: 30 * 60 * 1000,  // 有效期，单位是毫秒
       },
     }));
+    // set flash
+    app.use(function (req, res, next) {
+      res.locals.errors = req.flash('error');
+      res.locals.infos = req.flash('info');
+      next();
+    });
   }
 /**
  * Configure view engine
