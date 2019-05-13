@@ -5,13 +5,22 @@ module.exports = (app, educationService) => {
     if (user) {
       req.session.regenerate((err) => {
           if (err) {
-              return res.json({ret_code: 2, ret_msg: '登录失败'});
+            req.flash('error','登录失败');
+            return res.redirect('/'); 
+              // return res.json({ret_code: 2, ret_msg: '登录失败'});
           }
           req.session.loginUser = user.name;
           res.json({ret_code: 0, ret_msg: '登录成功'});
       });
     } else {
-      res.json({ret_code: 1, ret_msg: '账号或密码错误'});
+      if(user.name === ''){
+        req.flash('error','用户不存在');
+        return res.redirect('/');
+      }else if(req.body.password != user.password) {
+        req.flash('error','密码不对');
+        return res.redirect('/');
+      }
+      // res.json({ret_code: 1, ret_msg: '账号或密码错误'});
     }
   });
 
@@ -22,8 +31,8 @@ module.exports = (app, educationService) => {
     // session-file-store 本身的bug
     req.session.destroy((err) => {
       if (err) {
-          res.json({ret_code: 2, ret_msg: '退出登录失败'});
-          return;
+        res.json({ret_code: 2, ret_msg: '退出登录失败'});
+        return;
       }
       // req.session.loginUser = null;
       res.clearCookie('skey');
