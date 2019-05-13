@@ -4,10 +4,11 @@ const session = require('express-session');
 const FileStore = require('session-file-store')(session);
 const path = require('path');
 const hbs = require('express-hbs');
-const favicon = require('serve-favicon'),
-    methodOverride = require('method-override'),
-      cookieParser = require('cookie-parser'),
-      flash = require('connect-flash');
+const favicon = require('serve-favicon');
+const methodOverride = require('method-override');
+const flash = require('connect-flash');
+const cookieParser = require('cookie-parser');
+const WebSocket = require('ws');
 
 // tslint:disable-next-line:no-var-requires
 import * as bodyParser from 'body-parser';
@@ -44,12 +45,16 @@ export class MyExpress {
     // Initialize error routes
     this.initErrorRoutes(app);
 
-    return this.configureSSL(app);
+    const server = this.configureSSL(app);
+
+    this.initWebsocket(server);
+
+    return server;
 
   }
 
   private initMiddleware(app) {
-    app.use(favicon('modules/core/client/img/brand/favicon.ico'));// address need to be changed
+    // app.use(favicon('modules/core/client/img/brand/favicon.ico')); // address need to be changed
     app.use(bodyParser.urlencoded({ extended: false }));
     app.use(bodyParser.json());
     app.use(methodOverride());
@@ -69,7 +74,7 @@ export class MyExpress {
       },
     }));
     // set flash
-    app.use(function (req, res, next) {
+    app.use( (req, res, next) => {
       res.locals.errors = req.flash('error');
       res.locals.infos = req.flash('info');
       next();
@@ -112,5 +117,16 @@ private initViewEngine = (app) => {
   private configureSSL(app) {
     const server = http.createServer(app);
     return server;
+  }
+
+  private initWebsocket(server) {
+    const wss = new WebSocket.Server({server});
+    // const wss = new WebSocket.Server({ port: 8080 });
+    wss.on('connection', function connection(ws) {
+      ws.on('message', function incoming(message) {
+        console.log('received: %s', message);
+      });
+      ws.send('something');
+    });
   }
 }
