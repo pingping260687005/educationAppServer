@@ -15,14 +15,13 @@ import * as bodyParser from 'body-parser';
 import * as express from 'express';
 import * as http from 'http';
 import {config} from './config';
-import { EducationService } from './services/educationService';
 
 export class MyExpress {
-  public initExpress($sql) {
+  public initExpress() {
     // Initialize express app
     const app = express();
 
-    const edu = new EducationService($sql);
+    // const edu = new EducationService($sql);
 
     // Initialize Express middleware
     this.initMiddleware(app);
@@ -40,7 +39,7 @@ export class MyExpress {
     this.initModulesClientRoutes(app);
 
     // Initialize modules server routes
-    this.initModulesServerRoutes(app, edu);
+    this.initModulesServerRoutes(app);
 
     // Initialize error routes
     this.initErrorRoutes(app);
@@ -99,9 +98,9 @@ private initViewEngine = (app) => {
     // app.use('/node_modules', express.static(path.resolve('./node_modules'), { maxAge: 86400000, index: false }));
     // app.use('/', express.static(path.resolve('./.tmp')));
   }
-  private initModulesServerRoutes(app, edu) {
+  private initModulesServerRoutes(app) {
     config.server.routes.forEach((routePath) => {
-      require(path.resolve(routePath))(app, edu);
+      require(path.resolve(routePath))(app);
     });
   }
   private initErrorRoutes(app) {
