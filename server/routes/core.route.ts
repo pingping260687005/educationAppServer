@@ -1,7 +1,6 @@
+import * as edu from '../services/educationService';
 
 module.exports = (app) => {
-  const edu = require('./services/educationService');
-
   app.route('/login').post(async (req, res) => {
     // const sess = req.session;
     const user: any = await edu.checkUser(req.body.name, req.body.password);

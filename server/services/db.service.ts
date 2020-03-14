@@ -7,7 +7,7 @@ const pool = mysql.createPool({
     database: 'mysql',           // 数据库名字
   });
 
-exports.query = async (sql, queryList) => {
+export const query = async (sql, queryList) => {
   let conn;
   try {
     conn = await pool.getConnection();
@@ -20,7 +20,7 @@ exports.query = async (sql, queryList) => {
   }
 };
 
-exports.beginTransaction = async (sql1, queryList1, sql2, queryList2, sql3, queryList3) => {
+export const beginTransaction = async (sql1, queryList1, sql2?, queryList2?, sql3?, queryList3?) => {
   let conn;
   try {
     conn = await pool.getConnection();

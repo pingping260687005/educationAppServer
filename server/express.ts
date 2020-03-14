@@ -4,7 +4,6 @@ const session = require('express-session');
 const FileStore = require('session-file-store')(session);
 const path = require('path');
 const hbs = require('express-hbs');
-const favicon = require('serve-favicon');
 const methodOverride = require('method-override');
 const flash = require('connect-flash');
 const cookieParser = require('cookie-parser');

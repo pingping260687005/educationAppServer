@@ -1,56 +1,57 @@
-const dbService = require('./db.service');
+// const dbService = require('./db.service');
+import * as dbService from './db.service';
 
-exports.checkUser = async (userName: string, pwd: string) {
-    try {
-      const select = 'select * from user_education where username=? and password=?';
-      const conn = await dbService.query(select, [userName, pwd]);
-      const res = await conn.query(select, [userName, pwd]);
-      if (res.length > 0) {
-        const user  = {
-          // tslint:disable-next-line:trailing-comma
-          name: userName
-        };
-        return user;
-      } else {
-        return null;
-      }
-    } catch (error) {
+export const checkUser = async (userName: string, pwd: string) => {
+  try {
+    const select = 'select * from user_education where username=? and password=?';
+    const conn = await dbService.query(select, [userName, pwd]);
+    const res = await conn.query(select, [userName, pwd]);
+    if (res.length > 0) {
+      const user = {
+        // tslint:disable-next-line:trailing-comma
+        name: userName
+      };
+      return user;
+    } else {
       return null;
     }
-  };
-
-  // 查询
-exports.getAllStudent = async (_, res) => {
-  try {
-    const select = 'select * from student';
-    const data = await dbService.query(select, []);
-    return res.json({data, success: true});
   } catch (error) {
-    return res.json({error, success: false});
+    return null;
   }
 };
 
-exports.getStudentById = async (req, res) => {
+// 查询
+export const getAllStudent = async (_, res) => {
+  try {
+    const select = 'select * from student';
+    const data = await dbService.query(select, []);
+    return res.json({ data, success: true });
+  } catch (error) {
+    return res.json({ error, success: false });
+  }
+};
+
+export const getStudentById = async (req, res) => {
   const id = Number(req.params.id);
   try {
     const select = 'select * from student where id=?';
     const data = await dbService.query(select, [id]);
-    return res.json({data, success: true});
+    return res.json({ data, success: true });
   } catch (error) {
-    return res.json({error, success: false});
+    return res.json({ error, success: false });
   }
 };
 
-exports.addStudent = async (req, res) => {
+export const addStudent = async (req, res) => {
   const student: IStudent = req.body;
   try {
     const select = 'INSERT INTO student (studentNum, name, sex, age, phone, parentPhone, address) VALUES (?,?,?,?,?,?,?)';
     const data = await dbService.beginTransaction(select, [student.studentNum, student.name, student.sex, student.age, student.phone, student.parentPhone, student.address]);
     req.body.id = data['insertId'];
-    return res.json({...req.body, message: 'succeed'});
+    return res.json({ ...req.body, message: 'succeed' });
   } catch (error) {
-    return res.json({message: 'failed', reason: error});
-   }
+    return res.json({ message: 'failed', reason: error });
+  }
 };
 
 // addStudent(student: IStudent); {
@@ -58,14 +59,14 @@ exports.addStudent = async (req, res) => {
 //     return this.getPromise(sql);
 //   }
 
-exports.updateStudent = async (req, res) => {
+export const updateStudent = async (req, res) => {
   const student: IStudent = req.body;
   try {
     const select = 'UPDATE student SET studentNum = ?, name = ?, sex = ?, age =?, phone =?, parentPhone =?, address =? where id = ?;';
     await dbService.beginTransaction(select, [student.studentNum, student.name, student.sex, student.age, student.phone, student.parentPhone, student.address, student.id]);
-    return res.json({...req.body, message: 'succeed'});
+    return res.json({ ...req.body, message: 'succeed' });
   } catch (error) {
-    return res.json({message: 'failed', reason: error});
+    return res.json({ message: 'failed', reason: error });
   }
 };
 // updateStudent(student: IStudent); {
@@ -76,14 +77,14 @@ exports.updateStudent = async (req, res) => {
 //     return this.getPromise(sql);
 //   }
 
-exports.deleteStudents = async (req, res) => {
+export const deleteStudents = async (req, res) => {
   const ids: number[] = req.body;
   try {
     const select = 'DELETE FROM student WHERE id=?;';
-    const data = await dbService.beginTransaction(select, ids);
-    return res.json({message: 'succeed'});
+    await dbService.beginTransaction(select, ids);
+    return res.json({ message: 'succeed' });
   } catch (error) {
-    return res.send({message: 'failed', reason: error});
+    return res.send({ message: 'failed', reason: error });
   }
 };
 // deleteStudents(ids: number[]); {

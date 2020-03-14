@@ -16,7 +16,7 @@ const gulp = require('gulp'),
 gulp.task('nodemon', () => {
   return nodemon({
     script: 'build/server.js',
-    nodeArgs: ['--inspect'],
+    // nodeArgs: ['--inspect'],
     args: ['--max-old-space-size=8192'],
     ext: 'js,html',
     verbose: true,
